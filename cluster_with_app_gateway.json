@@ -209,9 +209,12 @@
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2018-11-01",
             "name": "[parameters('GatewayPublicIPAddressName')]",
+            "sku": {
+                "name": "Standard"
+            },
             "location": "[resourceGroup().location]",
             "properties": {
-                "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
+                "publicIPAllocationMethod": "Static",
                 "dnsSettings": {
                     "domainNameLabel": "[concat(parameters('dnsNameforApplicationGateway'),'-',toLower(resourceGroup().name),'-',toLower(parameters('wlsDomainName')))]"
                 }
@@ -329,17 +332,6 @@
                         "type": "Microsoft.Network/applicationGateways/gatewayIPConfigurations"
                     }
                 ],
-                "sslCertificates": [
-                    {
-                        "name": "mySSLCert",
-                        "etag": "W/\"ed63c160-b4e7-4d32-bf44-a11fb5387408\"",
-                        "properties": {
-                            "provisioningState": "Succeeded",
-                            "publicCertData": "MIIDVgYJKoZIhvcNAQcCoIIDRzCCA0MCAQExADALBgkqhkiG9w0BBwGgggMrMIIDJzCCAg+gAwIBAgIQL416hPJaoqlE8OrvevKnXzANBgkqhkiG9w0BAQsFADAZMRcwFQYDVQQDDA53d3cubXl0ZXN0LmNvbTAeFw0xOTA5MjAxMjQzMDlaFw0yMDA5MjAxMzAzMDlaMBkxFzAVBgNVBAMMDnd3dy5teXRlc3QuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz/M9d24G/Y4zDHXOWUkIz8nCZMXWgOsCK28XH+8TNNUraDRE3beyKyYb1K8hRXRYiGeUiKEFyGYb0H01t2Yk2DLy4Hl8LgTnVp4AjNAcOgmIc/G5l96HBXipxfMTU+pMfzfcKAhp+YVTxGJj0wAlKXV8jMP2dvlPscSj+OIpEK9CPa3G/PPkAcwyssO9aFbrIY+JvD6V1RsgAaRf/4FmLqZlZNtYWUiZ4BzikUzI7H5QzK0YabRZ9coTjlWlHXKaP2gciyIxWNQXGU0G/kTURViBnNYtrlBO7sRfK0CEFOKJYx+b5vwtAWSZmk7V+mZRHcNovou+OwPVaQYSOJX0LQIDAQABo2swaTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMBkGA1UdEQQSMBCCDnd3dy5teXRlc3QuY29tMB0GA1UdDgQWBBRl10eLuHz7hj/UWd4Y4EE7o4yjtzANBgkqhkiG9w0BAQsFAAOCAQEAsZbkpr/EzjHXvU3LD/S0zHSvx6cnn8UjNTn36fYh889jEkgKJhcRebKwNC0CahCaQkjWRU9hRBfYKt4N0cxfKnU4pX4tAEH/nO3N0uYNNTDzsEwA9zjKrUSbZisA/nxM0aWCfKrJJiQqXT+e4XQtxyBWsgOU8E0Met/HKfztDDeSMUeVp6W3OV2xextgPTwcPR+V6KMUtY+FXJQqekkLgxgXZr2sbn1MeVMuQO1ZwU0+62vyT7CUsZqsSn5HQ3cpEG8sE37XDRtZ+I67loNw46ZZ2rENkfO2ACNzJJLpIVSJO0Y/p3cLUnhqchQMuxHg3BJxU0xbKPZu3bUMNhSnYTEA"
-                        },
-                        "type": "Microsoft.Network/applicationGateways/sslCertificates"
-                    }
-                ],
                 "trustedRootCertificates": [],
                 "frontendIPConfigurations": [
                     {
@@ -354,14 +346,14 @@
                 ],
                 "frontendPorts": [
                     {
-                        "name": "http_port_80",
+                        "name": "http_port",
                         "properties": {
                             "port": "[int(variables('appGatewayFrontEndHTTPPort'))]"
                         },
                         "type": "Microsoft.Network/applicationGateways/frontendPorts"
                     },
                     {
-                        "name": "https_port_8443",
+                        "name": "https_port",
                         "properties": {
                             "port": "[int(variables('appGatewayFrontEndHTTPSPort'))]"
                         },
@@ -372,15 +364,13 @@
                     {
                         "name": "myGatewayBackendPool",
                         "properties": {
-                            "backendAddresses":[
-                            {
-                              "copy": {
-                                "name": "addVMTOAppGatewayBackendPool",
-                                "count": "[sub(int(parameters('numberOfInstances')),1)]"
-                              },
-                              "fqdn": "[concat(variables('managedServerVMName'), copyIndex('addVMTOAppGatewayBackendPool',1))]"
-                            }
-                          ]
+                            "copy": [{
+                                "name": "BackendAddresses",
+                                "count": "[sub(int(parameters('numberOfInstances')),1)]",
+                                "input" : {
+                                    "fqdn": "[concat(variables('managedServerVMName'), copyIndex('BackendAddresses',1))]"
+                                }
+                              }]
                         },
                         "type": "Microsoft.Network/applicationGateways/backendAddressPools"
                     }
@@ -408,29 +398,12 @@
                         "name": "HTTPListener",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
                             },
                             "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/frontendPorts/http_port_8080')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGatewayName')), '/frontendPorts/http_port')]"
                             },
                             "protocol": "Http",
-                            "requireServerNameIndication": false
-                        },
-                        "type": "Microsoft.Network/applicationGateways/httpListeners"
-                    },
-                    {
-                        "name": "HTTPSListener",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIp')]"
-                            },
-                            "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/frontendPorts/https_port_443')]"
-                            },
-                            "protocol": "Https",
-                            "sslCertificate": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/sslCertificates/mySSLCert')]"
-                            },
                             "requireServerNameIndication": false
                         },
                         "type": "Microsoft.Network/applicationGateways/httpListeners"
@@ -443,29 +416,13 @@
                         "properties": {
                             "ruleType": "Basic",
                             "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/httpListeners/HTTPListener')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGatewayName')), '/httpListeners/HTTPListener')]"
                             },
                             "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/backendAddressPools/myGatewayBackendPool')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGatewayName')), '/backendAddressPools/myGatewayBackendPool')]"
                             },
                             "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/backendHttpSettingsCollection/myHTTPSetting')]"
-                            }
-                        },
-                        "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
-                    },
-                    {
-                        "name": "HTTPSRoutingRule",
-                        "properties": {
-                            "ruleType": "Basic",
-                            "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/httpListeners/HTTPSListener')]"
-                            },
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/backendAddressPools/myGatewayBackendPool')]"
-                            },
-                            "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('appGatewayName')), '/backendHttpSettingsCollection/myHTTPSetting')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('appGatewayName')), '/backendHttpSettingsCollection/myHTTPSetting')]"
                             }
                         },
                         "type": "Microsoft.Network/applicationGateways/requestRoutingRules"
@@ -661,22 +618,22 @@
         "wlsDomainLocation": {
             "type": "string",
             "value": "[concat('/u01/domains/', parameters('wlsDomainName'))]"
-		},
-		"adminHostName": {
-			"type": "string",
-			"value": "[reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn]"
-		},
-		"adminConsole": {
-			"type": "string",
-			"value": "[concat('http://',reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn,':7001/console')]"
-		},
-		"adminSecuredConsole": {
-			"type": "string",
-			"value": "[concat('https://',reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn,':7002/console')]"
+        },
+        "adminHostName": {
+            "type": "string",
+            "value": "[reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn]"
+        },
+        "adminConsole": {
+            "type": "string",
+            "value": "[concat('http://',reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn,':7001/console')]"
+        },
+        "adminSecuredConsole": {
+            "type": "string",
+            "value": "[concat('https://',reference(concat(variables('adminVMName'),variables('publicIPAddressName'))).dnsSettings.fqdn,':7002/console')]"
         },
         "appGatewayURL": {
-			"type": "string",
-			"value": "[concat('http://',reference(parameters('GatewayPublicIPAddressName')).dnsSettings.fqdn)]"
+            "type": "string",
+            "value": "[concat('http://',reference(parameters('GatewayPublicIPAddressName')).dnsSettings.fqdn)]"
         }
     }
 }

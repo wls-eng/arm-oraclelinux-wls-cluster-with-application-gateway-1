@@ -23,12 +23,19 @@ then
  exit 1
 fi
 
+echo "Creating Key Vault..."
 az keyvault create --name "myKeyVault4Cert" --resource-group $resourceGrpName  --location southeastasia
 
+echo "Enabling Deployment on Key Vault ..."
 az keyvault update --name "myKeyVault4Cert" --resource-group $resourceGrpName --enabled-for-deployment "true"
 
+echo "Enabling Template Deployment on Key Vault ..."
 az keyvault update --name "myKeyVault4Cert" --resource-group $resourceGrpName --enabled-for-template-deployment "true"
 
+echo "Setting Secret myCertSecretData on Key Vault ..."
 az keyvault secret set --vault-name myKeyVault4Cert --encoding base64 --description text/plain --name myCertSecretData --file $pathToCertFile
 
+echo "Setting Secret myCertSecretPassword on Key Vault ..."
 az keyvault secret set --vault-name myKeyVault4Cert --name myCertSecretPassword --value $certPassword
+
+echo "Completed."

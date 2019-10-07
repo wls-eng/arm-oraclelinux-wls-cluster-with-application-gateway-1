@@ -25,9 +25,9 @@ fi
 
 az keyvault create --name "myKeyVault4Cert" --resource-group $resourceGrpName  --location southeastasia
 
-az keyvault update --name "myKeyVault4Cert" --resource-group resourceGrpName --enabled-for-deployment "true"
+az keyvault update --name "myKeyVault4Cert" --resource-group $resourceGrpName --enabled-for-deployment "true"
 
-az keyvault update --name "myKeyVault4Cert" --resource-group resourceGrpName --enabled-for-template-deployment "true"
+az keyvault update --name "myKeyVault4Cert" --resource-group $resourceGrpName --enabled-for-template-deployment "true"
 
 az keyvault secret set --vault-name myKeyVault4Cert --encoding base64 --description text/plain --name myCertSecretData --file $pathToCertFile
 

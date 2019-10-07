@@ -3,7 +3,7 @@
 function usage()
 {
   echo "$0 <resourceGroupName> <pathToCertificateFile> <certificatePassword>"
-  ex: $0 test-rg /home/testuser/certificate.pfx Azure123456!
+  echo "ex: $0 test-rg /home/testuser/certificate.pfx Azure123456!"
   exit 1
 }
 

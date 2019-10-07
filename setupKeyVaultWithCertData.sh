@@ -13,7 +13,7 @@ certPassword=$3
 
 if [ "$#" -ne 3 ];
 then
-  usage()
+  usage
 fi
 
 if [ ! -f "$pathToCertFile" ];

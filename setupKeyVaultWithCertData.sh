@@ -4,6 +4,7 @@ function usage()
 {
   echo "$0 <resourceGroupName> <pathToCertificateFile> <certificatePassword>"
   ex: $0 test-rg /home/testuser/certificate.pfx Azure123456!
+  exit 1
 }
 
 resourceGrpName=$1
@@ -12,8 +13,7 @@ certPassword=$3
 
 if [ "$#" -ne 3 ];
 then
-usage()
- exit 1
+  usage()
 fi
 
 if [ ! -f "$pathToCertFile" ];

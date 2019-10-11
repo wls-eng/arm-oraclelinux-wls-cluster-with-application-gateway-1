@@ -151,20 +151,10 @@
 			}
 		},
 		"appGatewaySSLCertificateData": {
-                    "reference": {
-                        "keyVault": {
-                           "id": "[resourceId(subscription().subscriptionId,  parameters('KeyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('KeyVaultName'))]"
-                        },
-                        "secretName": "myCertSecretData"
-                    }
+                    "type": "string"
                   },
                   "appGatewaySSLCertificatePassword": {
-                    "reference": {
-                        "keyVault": {                           
-                           "id": "[resourceId(subscription().subscriptionId,  parameters('KeyVaultResourceGroup'), 'Microsoft.KeyVault/vaults', parameters('KeyVaultName'))]"
-                        },
-                        "secretName": "myCertSecretPassword"
-                    }
+                    "type": "string"
                   }
 	},
 	"variables": {

@@ -149,18 +149,6 @@
              "metadata":{
                 "description": "Key Vault Resouce Group Name"
              }
-        }, 
-        "appGatewaySSLCertificateData": {
-            "type": "string",
-            "metadata": {
-                "description": "SSL Certificate Data for Application Gateway"
-            }
-        },
-        "appGatewaySSLCertificatePassword": {
-            "type": "string",
-            "metadata": {
-                "description": "SSL Certificate Data for Application Gateway"
-            }
         }
     },
     "variables":

@@ -151,17 +151,21 @@
 			}
 		},
 		"appGatewaySSLCertificateData": {
-			"type": "string",
-			"metadata": {
-				"description": "SSL Certificate Data for Application Gateway"
-			}
-		},
-		"appGatewaySSLCertificatePassword": {
-			"type": "string",
-			"metadata": {
-				"description": "SSL Certificate Data for Application Gateway"
-			}
-		}
+                    "reference": {
+                        "keyVault": {
+                           "id": "[concat('/subscriptions/',subscription().id,'/resourceGroups/',parameters('KeyVaultResourceGroup'),'/providers/Microsoft.KeyVault/vaults/',parameters('KeyVaultName'))]"
+                        },
+                        "secretName": "myCertSecretData"
+                    }
+                  },
+                  "appGatewaySSLCertificatePassword": {
+                    "reference": {
+                        "keyVault": {                           
+                        "id": "[concat('/subscriptions/',subscription().id,'/resourceGroups/',parameters('KeyVaultResourceGroup'),'/providers/Microsoft.KeyVault/vaults/',parameters('KeyVaultName'))]"
+                        },
+                        "secretName": "myCertSecretPassword"
+                    }
+                  }
 	},
 	"variables": {
 		"extensionUrl": "[concat(parameters('_artifactsLocation'), 'scripts/')]",

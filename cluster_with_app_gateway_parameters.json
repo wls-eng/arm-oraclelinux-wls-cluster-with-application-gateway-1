@@ -1,64 +1,48 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "adminUsername": {
-      "value": "GEN-UNIQUE"
-    },
-    "adminPasswordOrKey": {
-      "value": "GEN-SSH-PUB-KEY"
-    },
-    "dnsLabelPrefix": {
-      "value": "GEN-UNIQUE"
-    },
-    "acceptOTNLicenseAgreement": {
-      "value": "GEN-UNIQUE"
-    },
-    "otnAccountUsername": {
-      "value": "GEN-UNIQUE"
-    },
-    "otnAccountPassword": {
-      "value": "GEN-UNIQUE"
-    },
-    "wlsDomainName": {
-      "value": "GEN-UNIQUE"
-    },
-    "wlsUserName": {
-      "value": "GEN-UNIQUE"
-    },
-    "wlsPassword": {
-      "value": "GEN-UNIQUE"
-    },
-    "managedServerPrefix":{
-      "value": "GEN-UNIQUE"
-    },
-    "vmSizeSelect":{
-      "value": "GEN-UNIQUE"
-    },
-    "numberOfInstances": {
-      "value": "GEN-UNIQUE"
-    },
-    "dnsNameforApplicationGateway": {
-      "value": "GEN-UNIQUE"
-    },
-    "GatewayPublicIPAddressName": {
-      "value": "GEN-UNIQUE"
-    },
-    "appGatewaySSLCertificateData": {
-            "reference": {
-                "keyVault": {
-                    "id": "/subscriptions/{subscriptionid}/resourceGroups/{resourcegroupid}/providers/Microsoft.KeyVault/vaults/myKeyVault4Cert"
-                },
-                "secretName": "myCertSecretData"
-            }
-        },
-    "appGatewaySSLCertificatePassword": {
-            "reference": {
-                "keyVault": {
-                    "id": "/subscriptions/{subscriptionid}/resourceGroups/{resourcegroupid}/providers/Microsoft.KeyVault/vaults/myKeyVault4Cert"
-                },
-                "secretName": "myCertSecretPassword"
-            }
-        }
-  }
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"adminUsername": {
+			"value": "adminuser"
+		},
+		"adminPasswordOrKey": {
+			"value": "wlsQA@579"
+		},
+		"dnsLabelPrefix": {
+			"value": "myappgwtest"
+		},
+		"acceptOTNLicenseAgreement": {
+			"value": "y"
+		},
+		"otnAccountUsername": {
+			"value": "wlsqa.oracle@gmail.com"
+		},
+		"otnAccountPassword": {
+			"value": "wlsQA@1234"
+		},
+		"wlsDomainName": {
+			"value": "myAppGWClusterDomain"
+		},
+		"wlsUserName": {
+			"value": "weblogic"
+		},
+		"wlsPassword": {
+			"value": "welcome1"
+		},
+		"managedServerPrefix": {
+			"value": "ms"
+		},
+		"vmSizeSelect": {
+			"value": "Standard_A2"
+		},
+		"numberOfInstances": {
+			"value": 3
+		},
+		"dnsNameforApplicationGateway": {
+			"value": "myappgwgd"
+		},
+		"GatewayPublicIPAddressName": {
+			"value": "gatewayPublicIP"
+		}
+	}
 }
